@@ -35,8 +35,6 @@ void uart_console() {
 }
 
 void boot() {
-    extern byte_t *_interop_bss_start, *_interop_bss_end;
-
     clear_bss();
     drivers::serial::uart::init(config::uart::base);
 

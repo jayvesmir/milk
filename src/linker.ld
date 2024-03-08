@@ -12,7 +12,7 @@ PHDRS {
 }
 
 SECTIONS {
-    .text : { 
+    .text : ALIGN(4K) { 
         *(.text.entry) *(.text)
     } >ram AT>ram :text
 
