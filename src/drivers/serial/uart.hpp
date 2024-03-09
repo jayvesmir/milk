@@ -16,8 +16,8 @@ namespace drivers {
 namespace drivers {
     namespace serial {
         namespace uart {
-            template <typename _type> constexpr void write(const _type* data, size_t size) {
-                write(reinterpret_cast<const byte_t*>(data), size);
+            template <typename _type> constexpr void write(const _type* data, size_t n) {
+                write(reinterpret_cast<const byte_t*>(data), n * sizeof(_type));
             }
         } // namespace uart
     } // namespace serial
