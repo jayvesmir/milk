@@ -14,32 +14,34 @@ void uart_console() {
     uart::write("milk> ", 7);
     while (true) {
         auto byte = uart::read_byte();
-        if (byte.has_value()) {
-            switch (byte.value()) {
-            case 8:
-            case 127:
-                uart::write_byte(8);
-                uart::write_byte(' ');
-                uart::write_byte(8);
-                break;
-            case 13:
-            case '\n':
-                uart::write_byte('\n');
-                break;
-            default:
-                uart::write_byte(byte.value());
-                break;
-            }
+        if (!byte.has_value())
+            continue;
+
+        switch (byte.value()) {
+        case 8:
+        case 127:
+            uart::write_byte(8);
+            uart::write_byte(' ');
+            uart::write_byte(8);
+            break;
+        case 13:
+            uart::write_byte('\n');
+            break;
+        default:
+            uart::write_byte(byte.value());
+            break;
         }
     }
 }
 
 void boot() {
     clear_bss();
+    drivers::power::init(config::test::base);
     drivers::serial::uart::init(config::uart::base);
+    drivers::mmu::init(config::memory::start, config::memory::end);
 
     uart_console();
 
-    return;
+    drivers::power::poweroff();
 }
 }

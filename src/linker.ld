@@ -28,6 +28,8 @@ SECTIONS {
         _interop_bss_end = .;
     } > ram AT > ram :bss
 
-    _interop_memory_start = _interop_bss_end;
+    . = ALIGN(4K);
+
+    _interop_memory_start = .;
     _interop_memory_end = ORIGIN(ram) + LENGTH(ram);
 }
