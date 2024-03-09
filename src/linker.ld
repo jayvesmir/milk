@@ -2,7 +2,7 @@ OUTPUT_ARCH(riscv)
 ENTRY(_entry)
 
 MEMORY {
-    ram (rwx) : ORIGIN = 0x80000000, LENGTH = 256M
+    ram (RWX) : ORIGIN = 0x80000000, LENGTH = 256M
 }
 
 PHDRS {
@@ -14,17 +14,20 @@ PHDRS {
 SECTIONS {
     .text : ALIGN(4K) { 
         *(.text.entry) *(.text)
-    } >ram AT>ram :text
+    } > ram AT > ram :text
 
-    PROVIDE(_interop_global_pointer = .);
+    _interop_global_pointer = .;
 
     .data : ALIGN(4K) {
         *(.data) *(.sdata)
-    } >ram AT>ram :data
+    } > ram AT > ram :data
 
     .bss : ALIGN(4K) {
-        PROVIDE(_interop_bss_start = .);
+        _interop_bss_start = .;
         *(.bss) *(.sbss)
-        PROVIDE(_interop_bss_end = .);
-    } >ram AT>ram :bss
+        _interop_bss_end = .;
+    } > ram AT > ram :bss
+
+    _interop_memory_start = _interop_bss_end;
+    _interop_memory_end = ORIGIN(ram) + LENGTH(ram);
 }

@@ -40,7 +40,7 @@ build: $(asm_obj) $(cpp_obj)
 	@$(LINK) $(LINKFLAGS) -o $(OUTPUT_NAME) $(asm_obj) $(cpp_obj)
 
 VM = qemu-system-riscv64
-VMFLAGS = -nographic -m 512M -smp 1 -machine virt -bios none -kernel $(OUTPUT_NAME)
+VMFLAGS = -nographic -m 256M -smp 1 -machine virt -bios none -kernel $(OUTPUT_NAME)
 
 run: build
 	@$(VM) $(VMFLAGS) $(VM_OPT_FLAGS)
