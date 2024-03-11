@@ -40,8 +40,13 @@ void boot() {
     drivers::mmu::init(config::memory::start, config::memory::end);
     drivers::serial::uart::init(config::uart::base);
 
-    drivers::sv39::map(drivers::sv39::global_page_table, config::uart::base, config::uart::base,
-                       drivers::sv39::PTEF_URW, 0);
+    drivers::sv39::map(config::uart::base, config::uart::base, drivers::sv39::PTEF_URW, 0);
+
+    volatile auto phys = drivers::sv39::physical_from_virtual(config::uart::base);
+
+    drivers::sv39::unmap();
+
+    volatile auto phys_ = drivers::sv39::physical_from_virtual(config::uart::base);
 
     uart_console();
 

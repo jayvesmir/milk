@@ -1,15 +1,11 @@
 #pragma once
+#include "interop.hpp"
 #include "types.hpp"
 
 namespace milk {
     constexpr auto memset(auto* dst, byte_t value, size_t n);
     template <typename _type> constexpr auto memcpy(const _type* src, _type* dst, size_t n);
 } // namespace milk
-
-extern "C" {
-void _interop_memset(byte_t* dst, byte_t value, size_t size);
-void _interop_memcpy(const byte_t* src, byte_t* dst, size_t size);
-}
 
 namespace milk {
     constexpr auto memset(auto* dst, byte_t value, size_t n) {

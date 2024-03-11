@@ -1,8 +1,22 @@
 #pragma once
+#include "lib/utility.hpp"
 #include "types.hpp"
 
 namespace drivers {
     namespace sv39 {
+        enum address_type { AT_virtual, AT_physical };
+
+        template <address_type _addr_type> class address {
+            ptr_t _data[3];
+
+          public:
+            address() : _data(0) {}
+            address(ptr_t addr [[maybe_unused]]) : _data(0) {}
+
+            constexpr auto type() const { return _addr_type; }
+            constexpr auto operator[](size_t index) const { return _data[index % 3]; }
+        };
+
         enum page_table_entry_flags {
             PTEF_valid    = (1 << 0),
             PTEF_read     = (1 << 1),
@@ -49,6 +63,9 @@ namespace drivers {
 
         void init();
 
-        void map(page_table& table, ptr_t paddr, ptr_t vaddr, page_table_entry_flags flags, size_t level);
+        milk::optional<ptr_t> physical_from_virtual(ptr_t vaddr);
+
+        void unmap();
+        void map(ptr_t paddr, ptr_t vaddr, page_table_entry_flags flags, size_t level);
     } // namespace sv39
 } // namespace drivers

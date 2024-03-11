@@ -1,5 +1,5 @@
 #pragma once
-#include "interop/interop.hpp"
+#include "interop.hpp"
 
 namespace milk {
     // aligns x to the nearest greater multiple of a
