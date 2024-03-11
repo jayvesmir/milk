@@ -2,6 +2,7 @@
 #include "config.hpp"
 #include "lib/utility.hpp"
 #include "page.hpp"
+#include "sv39.hpp"
 
 namespace drivers {
     namespace mmu {
@@ -18,6 +19,8 @@ namespace drivers {
             // clear all page bits
             for (auto it = reinterpret_cast<page_t*>(memory_start); it < reinterpret_cast<page_t*>(data_start); it++)
                 it->reset();
+
+            sv39::init();
         }
     } // namespace mmu
 } // namespace drivers

@@ -9,6 +9,9 @@ namespace drivers {
             auto max_page =
                 reinterpret_cast<page_t*>(memory_start + (usable_memory_size / config::memory::page_size)) - n;
 
+            if (n > (usable_memory_size / config::memory::page_size))
+                return nullptr;
+
             for (auto it = reinterpret_cast<page_t*>(memory_start); it < max_page; it++) {
                 if (it->used())
                     continue;

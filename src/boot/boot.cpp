@@ -37,8 +37,11 @@ void uart_console() {
 void boot() {
     clear_bss();
     drivers::power::init(config::test::base);
-    drivers::serial::uart::init(config::uart::base);
     drivers::mmu::init(config::memory::start, config::memory::end);
+    drivers::serial::uart::init(config::uart::base);
+
+    drivers::sv39::map(drivers::sv39::global_page_table, config::uart::base, config::uart::base,
+                       drivers::sv39::PTEF_URW, 0);
 
     uart_console();
 

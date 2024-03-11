@@ -16,6 +16,6 @@ using f128 = long double;
 
 using size_t = u64;
 using byte_t = u8;
-using ptr_t  = unsigned long;
+using ptr_t  = unsigned long long;
 
 #include "lib/optional.hpp"
