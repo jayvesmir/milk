@@ -56,8 +56,8 @@ namespace drivers {
                             milk::memset(&l1_table[ii], 0, 1);
                         }
                     }
-                    milk::memset(reinterpret_cast<byte_t*>(addr_cache), 0, 1);
                     mmu::deallocate_pages(reinterpret_cast<byte_t*>(addr_cache));
+                    milk::memset(&global_page_table[i], 0, 1);
                 }
             }
         }
