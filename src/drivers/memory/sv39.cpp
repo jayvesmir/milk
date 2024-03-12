@@ -53,11 +53,11 @@ namespace drivers {
                         if (l1_table[ii].valid() && !l1_table[ii].terminal()) {
                             mmu::deallocate_pages(
                                 reinterpret_cast<byte_t*>((l1_table[ii].bits() & ~milk::bit_fill(10ull)) << 2));
-                            milk::memset(&l1_table[ii], 0, 1);
+                            l1_table[ii].invalidate();
                         }
                     }
                     mmu::deallocate_pages(reinterpret_cast<byte_t*>(addr_cache));
-                    milk::memset(&global_page_table[i], 0, 1);
+                    global_page_table[i].invalidate();
                 }
             }
         }

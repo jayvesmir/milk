@@ -45,6 +45,7 @@ namespace drivers {
 
             constexpr auto bits() const { return _bits; }
             constexpr auto set(u64 bits) { return (_bits = bits); }
+            constexpr auto invalidate() { set(_bits & ~PTEF_valid); }
             constexpr auto valid() const { return (_bits & PTEF_valid) == 1; }
             constexpr auto terminal() const { return (_bits & PTEF_RWX) != 0; }
         };
