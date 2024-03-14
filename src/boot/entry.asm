@@ -17,6 +17,8 @@ _entry:
     csrr a0, mhartid
     bne  a0, zero, _die
 
+    csrw satp, 0
+
     # setup stack
     la sp, _interop_config_stack_end
 

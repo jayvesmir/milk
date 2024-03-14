@@ -3,6 +3,10 @@
 #include "lib/string.hpp"
 #include "mmu.hpp"
 
+extern ptr_t _interop_bss_start, _interop_bss_end;
+extern ptr_t _interop_text_start, _interop_text_end;
+extern ptr_t _interop_data_start, _interop_data_end;
+
 namespace drivers {
     namespace sv39 {
         page_table global_page_table;
@@ -19,8 +23,23 @@ namespace drivers {
             _data[2] = (addr >> 30) & milk::bit_fill(9);
         }
 
+        void map_default_addresses() {
+            sv39::map_range(reinterpret_cast<ptr_t>(&_interop_bss_start), reinterpret_cast<ptr_t>(&_interop_bss_end),
+                            sv39::PTEF_RW);
+            sv39::map_range(reinterpret_cast<ptr_t>(&_interop_text_start), reinterpret_cast<ptr_t>(&_interop_text_end),
+                            sv39::PTEF_RX);
+            sv39::map_range(reinterpret_cast<ptr_t>(&_interop_data_start), reinterpret_cast<ptr_t>(&_interop_data_end),
+                            sv39::PTEF_RW);
+
+            sv39::map(config::test::base, config::test::base, drivers::sv39::PTEF_URW, 0);
+            sv39::map(config::uart::base, config::uart::base, drivers::sv39::PTEF_URW, 0);
+        }
+
         void init() {
             milk::memset(&global_page_table, 0, 1);
+            map_default_addresses();
+
+            asm volatile("csrw satp, %0" ::"r"((8ull << 60) | reinterpret_cast<ptr_t>(&global_page_table) >> 12));
         }
 
         void map(ptr_t paddr, ptr_t vaddr, page_table_entry_flags flags, size_t level) {
@@ -31,7 +50,7 @@ namespace drivers {
 
             auto* entry = &global_page_table[vpn[2]];
 
-            for (auto i = 1ll; i >= static_cast<s64>(level); i--) {
+            for (auto i = 1; i >= static_cast<s8>(level); i--) {
                 if (!entry->valid()) {
                     auto p = milk::memset(mmu::allocate_pages(1), 0, config::memory::page_size);
                     *entry = (reinterpret_cast<ptr_t>(p) >> 2) | PTEF_valid;
@@ -62,11 +81,21 @@ namespace drivers {
             }
         }
 
+        void map_range(ptr_t begin, ptr_t end, page_table_entry_flags flags) {
+            begin &= ~(config::memory::page_size - 1);
+            auto n_pages = (milk::align_up(end, config::memory::page_size) - begin) / config::memory::page_size;
+
+            while (n_pages-- > 0) {
+                map(begin, begin, flags, 0);
+                begin += config::memory::page_size;
+            }
+        }
+
         milk::optional<ptr_t> physical_from_virtual(ptr_t vaddr) {
             address<AT_virtual> vpn(vaddr);
             auto* entry = &global_page_table[vpn[2]];
 
-            for (auto i = 2ll; i >= 0; i--) {
+            for (auto i = 2; i >= 0; i--) {
                 if (!entry->valid())
                     break;
 

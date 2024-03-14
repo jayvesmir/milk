@@ -45,7 +45,7 @@ namespace drivers {
 
             constexpr auto bits() const { return _bits; }
             constexpr auto set(u64 bits) { return (_bits = bits); }
-            constexpr auto invalidate() { set(_bits & ~PTEF_valid); }
+            constexpr auto invalidate() { return (_bits &= ~PTEF_valid); }
             constexpr auto valid() const { return (_bits & PTEF_valid) == 1; }
             constexpr auto terminal() const { return (_bits & PTEF_RWX) != 0; }
         };
@@ -67,6 +67,7 @@ namespace drivers {
         milk::optional<ptr_t> physical_from_virtual(ptr_t vaddr);
 
         void unmap();
+        void map_range(ptr_t begin, ptr_t end, page_table_entry_flags flags);
         void map(ptr_t paddr, ptr_t vaddr, page_table_entry_flags flags, size_t level);
     } // namespace sv39
 } // namespace drivers

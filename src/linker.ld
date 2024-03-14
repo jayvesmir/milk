@@ -13,13 +13,17 @@ PHDRS {
 
 SECTIONS {
     .text : ALIGN(4K) { 
+        _interop_text_start = .;
         *(.text.entry) *(.text)
+        _interop_text_end = .;
     } > ram AT > ram :text
 
     _interop_global_pointer = .;
 
     .data : ALIGN(4K) {
+        _interop_data_start = .;
         *(.data) *(.sdata)
+        _interop_data_end = .;
     } > ram AT > ram :data
 
     .bss : ALIGN(4K) {
