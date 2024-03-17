@@ -14,7 +14,7 @@ PHDRS {
 SECTIONS {
     .text : ALIGN(4K) { 
         _interop_text_start = .;
-        *(.text.entry) *(.text)
+        *(.text.entry) *(.text) *(.text.*)
         _interop_text_end = .;
     } > ram AT > ram :text
 
@@ -22,13 +22,23 @@ SECTIONS {
 
     .data : ALIGN(4K) {
         _interop_data_start = .;
-        *(.data) *(.sdata)
+        *(.data) *(.data.*)
+        *(.sdata) *(.sdata.*)
         _interop_data_end = .;
+    } > ram AT > ram :data
+
+    .rodata : ALIGN(4K) {
+        _interop_rodata_start = .;
+        *(.rodata) *(.rodata.*)
+        *(.srodata) *(.srodata.*)
+        _interop_rodata_end = .;
     } > ram AT > ram :data
 
     .bss : ALIGN(4K) {
         _interop_bss_start = .;
-        *(.bss) *(.sbss)
+        *(.bss) *(.bss.*)
+        *(.sbss) *(.sbss.*)
+        . = ALIGN(8);
         _interop_bss_end = .;
     } > ram AT > ram :bss
 

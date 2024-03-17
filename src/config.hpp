@@ -7,8 +7,8 @@ extern ptr_t _interop_memory_end;
 
 namespace config {
     namespace stack {
-        extern byte_t *start, *end;
         static constexpr size_t size = 16'384;
+        extern byte_t start[size], *end;
     } // namespace stack
 
     namespace memory {

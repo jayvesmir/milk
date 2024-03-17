@@ -3,12 +3,12 @@
 
 extern "C" {
 void clear_bss() {
-    extern byte_t *_interop_bss_start, *_interop_bss_end;
+    extern u64 *_interop_bss_start, *_interop_bss_end;
     for (auto it = &_interop_bss_start; it < &_interop_bss_end; it++)
-        *reinterpret_cast<byte_t*>(it) = 0;
+        *reinterpret_cast<u64*>(it) = 0;
 }
 
-void uart_console() {
+void kernel_main() {
     using namespace drivers::serial;
 
     uart::write("milk> ", 7);
@@ -32,17 +32,20 @@ void uart_console() {
             break;
         }
     }
-}
-
-void boot() {
-    clear_bss();
-    drivers::power::init(config::test::base);
-    drivers::mmu::init(config::memory::start, config::memory::end);
-    drivers::serial::uart::init(config::uart::base);
-
-    uart_console();
 
     drivers::sv39::unmap();
     drivers::power::poweroff();
+}
+
+u64 boot() {
+    drivers::power::init(config::test::base);
+    drivers::serial::uart::init(config::uart::base);
+    drivers::mmu::init(config::memory::start, config::memory::end);
+
+    auto root_ppn = drivers::sv39::address<drivers::sv39::AT_physical>(
+                        reinterpret_cast<ptr_t>(drivers::sv39::global_page_table.entries()))
+                        .pack_ppn();
+
+    return root_ppn >> 2;
 }
 }

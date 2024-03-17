@@ -1,5 +1,6 @@
 #include "mmu.hpp"
 #include "config.hpp"
+#include "lib/string.hpp"
 #include "lib/utility.hpp"
 #include "page.hpp"
 #include "sv39.hpp"
@@ -16,9 +17,7 @@ namespace drivers {
                                           config::memory::page_size);
             usable_memory_size = (memory_end - data_start);
 
-            // clear all page bits
-            for (auto it = reinterpret_cast<page_t*>(memory_start); it < reinterpret_cast<page_t*>(data_start); it++)
-                it->reset();
+            milk::memset(reinterpret_cast<byte_t*>(memory_start), 0, usable_memory_size / config::memory::page_size);
 
             sv39::init();
         }

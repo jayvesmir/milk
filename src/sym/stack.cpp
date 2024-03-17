@@ -2,10 +2,9 @@
 
 namespace config {
     namespace stack {
-        byte_t ptr[stack::size];
+        byte_t start[stack::size];
 
-        byte_t* start = ptr;
-        byte_t* end   = ptr + stack::size;
+        byte_t* end = start + stack::size;
     } // namespace stack
 } // namespace config
 

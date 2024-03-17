@@ -23,7 +23,15 @@ namespace drivers {
             _data[2] = (addr >> 30) & milk::bit_fill(9);
         }
 
+        template <> ptr_t address<AT_physical>::pack_ppn() {
+            return (_data[2] << 28ull) | (_data[1] << 19ull) | (_data[0] << 10ull);
+        }
+
         void map_default_addresses() {
+            sv39::map_range(mmu::data_start, mmu::memory_end, sv39::PTEF_URWX);
+            sv39::map_range(mmu::memory_start, mmu::data_start, sv39::PTEF_RWX);
+            sv39::map_range(reinterpret_cast<ptr_t>(config::stack::start), reinterpret_cast<ptr_t>(config::stack::end),
+                            sv39::PTEF_RW);
             sv39::map_range(reinterpret_cast<ptr_t>(&_interop_bss_start), reinterpret_cast<ptr_t>(&_interop_bss_end),
                             sv39::PTEF_RW);
             sv39::map_range(reinterpret_cast<ptr_t>(&_interop_text_start), reinterpret_cast<ptr_t>(&_interop_text_end),
@@ -38,8 +46,6 @@ namespace drivers {
         void init() {
             milk::memset(&global_page_table, 0, 1);
             map_default_addresses();
-
-            asm volatile("csrw satp, %0" ::"r"((8ull << 60) | reinterpret_cast<ptr_t>(&global_page_table) >> 12));
         }
 
         void map(ptr_t paddr, ptr_t vaddr, page_table_entry_flags flags, size_t level) {
@@ -59,7 +65,7 @@ namespace drivers {
                 entry = &reinterpret_cast<page_table_entry*>((entry->bits() & ~milk::bit_fill(10ull)) << 2)[vpn[i]];
             }
 
-            *entry = (ppn[2] << 28ull) | (ppn[1] << 19ull) | (ppn[0] << 10ull) | flags | PTEF_valid;
+            *entry = (ppn.pack_ppn() >> 2) | flags | PTEF_valid;
         }
 
         void unmap() {

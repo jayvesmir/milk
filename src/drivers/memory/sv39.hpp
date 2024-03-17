@@ -10,8 +10,10 @@ namespace drivers {
             ptr_t _data[3];
 
           public:
-            address() : _data(0) {}
-            address(ptr_t addr [[maybe_unused]]) : _data(0) {}
+            address() : _data{0} {}
+            address(ptr_t addr [[maybe_unused]]) : _data{0} {}
+
+            ptr_t pack_ppn() { return 0; }
 
             constexpr auto type() const { return _addr_type; }
             constexpr auto operator[](size_t index) const { return _data[index % 3]; }
