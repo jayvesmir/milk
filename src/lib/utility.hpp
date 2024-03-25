@@ -23,4 +23,9 @@ namespace milk {
         if (!p)
             _die();
     }
+
+    // clamps v between min and max
+    template <typename _type> constexpr auto clamp(const _type& min, const _type& max, const _type& v) {
+        return v < min ? min : v > max ? max : v;
+    }
 } // namespace milk
