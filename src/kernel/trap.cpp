@@ -18,7 +18,7 @@ void _supervisor_trap() {
     asm volatile("csrr %0, mtval" : "=r"(fault_addr));
     asm volatile("csrr %0, mcause" : "=r"(cause));
 
-    milk::print("machine trap invoked at % with the cause %\n", fault_addr, cause);
+    milk::print("supervisor trap invoked at % with the cause %\n", fault_addr, cause);
 
     _die();
 }
