@@ -1,5 +1,6 @@
 #include "config.hpp"
 #include "drivers.hpp"
+#include "lib/stream.hpp"
 
 extern "C" {
 void clear_bss() {
@@ -11,24 +12,24 @@ void clear_bss() {
 void kernel_main() {
     using namespace drivers::serial;
 
-    uart::write("milk> ", 7);
+    milk::serial_console.write("milk> ", 7);
     while (true) {
-        auto byte = uart::read_byte();
+        auto byte = milk::serial_console.get();
         if (!byte.has_value())
             continue;
 
         switch (byte.value()) {
         case 8:
         case 127:
-            uart::write_byte(8);
-            uart::write_byte(' ');
-            uart::write_byte(8);
+            milk::serial_console.put(8);
+            milk::serial_console.put(' ');
+            milk::serial_console.put(8);
             break;
         case 13:
-            uart::write_byte('\n');
+            milk::serial_console.put('\n');
             break;
         default:
-            uart::write_byte(byte.value());
+            milk::serial_console.put(byte.value());
             break;
         }
     }

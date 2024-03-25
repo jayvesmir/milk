@@ -35,9 +35,10 @@ namespace drivers {
                 *transmitter = data;
             }
 
-            void write(const byte_t* data, size_t size) {
+            size_t write(const byte_t* data, size_t size) {
                 for (auto it = data; it < data + size; it++)
                     write_byte(*it);
+                return size;
             }
         } // namespace uart
     } // namespace serial
