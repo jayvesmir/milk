@@ -15,7 +15,7 @@ endif
 
 COMMONFLAGS = -nostdlib
 LINKFLAGS = $(COMMONFLAGS) -ffreestanding -static -T src/linker.ld
-CCFLAGS = $(COMMONFLAGS) -ffreestanding -fno-exceptions -r -I src/ -mcmodel=medany -std=c++20 -Wall -Wextra -Wpedantic $(OPT_FLAGS)
+CCFLAGS = $(COMMONFLAGS) -ffreestanding -fno-exceptions -r -I src/ -mcmodel=medany -std=c++23 -Wall -Wextra -Wpedantic $(OPT_FLAGS)
 ASMFLAGS = $(COMMONFLAGS) -r
 
 BUILD_DIR = build
