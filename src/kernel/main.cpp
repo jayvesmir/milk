@@ -1,6 +1,6 @@
 #include "config.hpp"
 #include "drivers.hpp"
-#include "lib/stream.hpp"
+#include "lib/sformat.hpp"
 
 extern "C" {
 void clear_bss() {
@@ -12,7 +12,7 @@ void clear_bss() {
 void kernel_main() {
     using namespace drivers::serial;
 
-    milk::serial_console.write("milk> ", 7);
+    milk::print("milk> ");
     while (true) {
         auto byte = milk::serial_console.get();
         if (!byte.has_value())
@@ -21,15 +21,13 @@ void kernel_main() {
         switch (byte.value()) {
         case 8:
         case 127:
-            milk::serial_console.put(8);
-            milk::serial_console.put(' ');
-            milk::serial_console.put(8);
+            milk::print("% %", static_cast<char>(8), static_cast<char>(8));
             break;
         case 13:
-            milk::serial_console.put('\n');
+            milk::print("\n");
             break;
         default:
-            milk::serial_console.put(byte.value());
+            milk::print("%", byte.value());
             break;
         }
     }

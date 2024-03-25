@@ -21,8 +21,9 @@ namespace drivers {
 namespace drivers {
     namespace mmu {
         template <typename _type> constexpr auto allocate(size_t n) {
-            return reinterpret_cast<_type*>(allocate_pages(milk::clamp(
-                1, usable_memory_size / config::memory::page_size, (n * sizeof(_type)) / config::memory::page_size)));
+            return reinterpret_cast<_type*>(allocate_pages(
+                milk::clamp(1ull, usable_memory_size / config::memory::page_size,
+                            milk::align_up(n * sizeof(_type), config::memory::page_size) / config::memory::page_size)));
         }
 
         template <typename _type> constexpr auto deallocate(_type* ptr) {

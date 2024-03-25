@@ -3,11 +3,19 @@
 #include "types.hpp"
 
 namespace milk {
+    constexpr auto strlen(const char* src);
     constexpr auto memset(auto* dst, byte_t value, size_t n);
     template <typename _type> constexpr auto memcpy(const _type* src, _type* dst, size_t n);
 } // namespace milk
 
 namespace milk {
+    constexpr auto strlen(const char* src) {
+        auto _ = src;
+        while (*_++)
+            ;
+        return _ - src;
+    }
+
     constexpr auto memset(auto* dst, byte_t value, size_t n) {
         _interop_memset(reinterpret_cast<byte_t*>(dst), value, n * sizeof(*dst));
         return dst;

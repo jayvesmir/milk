@@ -18,4 +18,14 @@ using size_t = u64;
 using byte_t = u8;
 using ptr_t  = unsigned long long;
 
+namespace milk {
+    struct false_type {
+        static const bool v = false;
+    };
+
+    struct true_type {
+        static const bool v = true;
+    };
+} // namespace milk
+
 #include "lib/optional.hpp"
