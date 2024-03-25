@@ -59,9 +59,14 @@ namespace milk {
     template <typename _last_t>
     constexpr auto sformat(basic_ostream<char>& stream, const char* fmt, const _last_t& last) {
         while (*fmt) {
-            if (*fmt == '%')
+            if (*fmt == '%') {
+                if (*(fmt + 1) == '%') {
+                    stream.put('%');
+                    fmt += 2;
+                    continue;
+                }
                 sformat(stream, last);
-            else
+            } else
                 stream.put(*fmt);
             fmt++;
         }
@@ -71,6 +76,11 @@ namespace milk {
     constexpr auto sformat(basic_ostream<char>& stream, const char* fmt, const _first_t& first, const _rest&... rest) {
         while (*fmt) {
             if (*fmt == '%') {
+                if (*(fmt + 1) == '%') {
+                    stream.put('%');
+                    fmt += 2;
+                    continue;
+                }
                 sformat(stream, first);
                 sformat(stream, ++fmt, rest...);
                 break;
