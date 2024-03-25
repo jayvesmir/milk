@@ -10,4 +10,6 @@ namespace milk {
     concept t32s = requires { sizeof(_type) == 4; };
     template <typename _type>
     concept t64s = requires { sizeof(_type) == 8; };
+    template <typename _type>
+    concept t128s = requires { sizeof(_type) == 16; };
 } // namespace milk
