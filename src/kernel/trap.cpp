@@ -1,5 +1,5 @@
-#include "drivers.hpp"
 #include "lib/interop.hpp"
+#include "lib/sformat.hpp"
 #include "types.hpp"
 
 extern "C" {
@@ -8,7 +8,7 @@ void _machine_trap() {
     asm volatile("csrr %0, mtval" : "=r"(fault_addr));
     asm volatile("csrr %0, mcause" : "=r"(cause));
 
-    drivers::serial::uart::write("machine trap invoked\n", 22);
+    milk::print("machine trap invoked at % with the cause %\n", fault_addr, cause);
 
     _die();
 }
@@ -18,7 +18,7 @@ void _supervisor_trap() {
     asm volatile("csrr %0, mtval" : "=r"(fault_addr));
     asm volatile("csrr %0, mcause" : "=r"(cause));
 
-    drivers::serial::uart::write("supervisor trap invoked\n", 25);
+    milk::print("machine trap invoked at % with the cause %\n", fault_addr, cause);
 
     _die();
 }

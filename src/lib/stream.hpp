@@ -29,6 +29,5 @@ namespace milk {
     template <typename _type> using basic_istream  = basic_stream<_type, mdd_in>;
     template <typename _type> using basic_ostream  = basic_stream<_type, mdd_out>;
 
-    auto serial_console = basic_iostream<char>{{drivers::serial::uart::read_byte<char>},
-                                               {drivers::serial::uart::write_byte, drivers::serial::uart::write}};
+    extern basic_iostream<char> serial_console;
 } // namespace milk
